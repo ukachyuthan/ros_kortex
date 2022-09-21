@@ -95,3 +95,44 @@ This folder contains the third-party packages we use with the ROS Kortex package
         or
         
         apt-get update --fix-missing
+
+2. Failed to call executewaypointtrajectory (Essentially an issue when you try to do roslaunch and there are failed to call errors): Firmware on robot needs to updated to the latest as the failed to call functions are part of the latest updates
+
+3. Dual arm launch (says is the robot connected?): Use ethernet hub or ensure both robots are connected to robot via ethernet cables
+
+4. Two arms run asynchronously because of edited kortex_subscriber.cpp file in kortex_driver folder
+
+### Testing 1 arm installation
+
+1. In one terminal run
+        
+        roslaunch kortex_driver kortex_driver.launch ip_address:=<ip_address> gripper:=robotiq_2f_85
+        
+2. In second terminal run
+
+        rostopic pub /my_gen3/in/cartesian_velocity kortex_driver/TwistCommand "reference_frame: 0
+        twist: {linear_x: 0.0, linear_y: 0.0, linear_z: 0.05, angular_x: 0.0, angular_y: 0.0,
+        angular_z: 0.0}
+        duration: 0"        
+        
+### Testing 2 arm installation
+
+1. In one terminal run
+        
+        roslaunch kortex_driver kortex_dual_driver.launch left_ip_address:=192.168.1.11 left_arm:=gen3 left_gripper:=robotiq_2f_85 right_ip_address:=192.168.1.10 right_arm:=gen3 right_gripper:=robotiq_2f_85 start_moveit:=false
+
+        
+2. In second terminal run for left arm 
+
+        rostopic pub my_left_arm/in/cartesian_velocity kortex_driver/TwistCommand "reference_frame: 0
+        twist: {linear_x: 0.0, linear_y: 0.0, linear_z: 0.01, angular_x: 0.0, angular_y: 0.0,
+        angular_z: 0.0}
+        duration: 0"   
+
+3. In third terminal run for right arm
+
+        rostopic pub my_right_arm/in/cartesian_velocity kortex_driver/TwistCommand "reference_frame: 0
+        twist: {linear_x: 0.0, linear_y: 0.0, linear_z: 0.01, angular_x: 0.0, angular_y: 0.0,
+        angular_z: 0.0}
+        duration: 0"        
+
